@@ -60,7 +60,9 @@
     "voxel-wireframe": "^0.6.0",
     "voxel-wool": "^1.0.0",
     "voxel-workbench": "^1.0.0",
-    "voxel-zen": "^1.0.0"
+    "voxel-zen": "^1.0.0",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.3.2"
   },
   "engine": {
     "node": "0.12.x"
@@ -71,6 +73,8 @@
     "watchify": "^3.7.0"
   },
   "scripts": {
-    "start": "beefy index.js:bundle.js --watchify --port 8080 -- --debug"
+    "start": "node server.js",
+    "build:bundle": "browserify index.js > bundle.js",
+    "build:bundle:watch": "watchify index.js -o bundle.js -v"
   }
 }

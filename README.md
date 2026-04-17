@@ -77,4 +77,6 @@ Additional plugins:
 
 
 
-./node_modules/.bin/browserify index.js > bundle.js
+
+npm run build:bundle
+npm start
