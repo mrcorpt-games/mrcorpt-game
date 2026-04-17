@@ -1,6 +1,59 @@
 
 const createEngine = require('voxel-engine-stackgl');
 
+const PLUGINS_UNLOCK_COMMAND = 'unlockPluginsFolder';
+
+function hidePluginsFolderUntilUnlocked() {
+  let pluginsFolderOpenButton = null;
+
+  const findPluginsFolderOpenButton = function() {
+    const folderTitles = document.querySelectorAll('.dg .title');
+
+    for (let i = 0; i < folderTitles.length; i++) {
+      const title = folderTitles[i];
+      if (title.textContent && title.textContent.trim().toLowerCase() === 'plugins') {
+        return title;
+      }
+    }
+
+    return null;
+  };
+
+  const setPluginsFolderVisibility = function(isVisible) {
+    if (!pluginsFolderOpenButton) return;
+    pluginsFolderOpenButton.style.display = isVisible ? '' : 'none';
+  };
+
+  const waitForPluginsFolder = function() {
+    pluginsFolderOpenButton = findPluginsFolderOpenButton();
+    if (pluginsFolderOpenButton) {
+      setPluginsFolderVisibility(false);
+      return;
+    }
+
+    setTimeout(waitForPluginsFolder, 100);
+  };
+
+  waitForPluginsFolder();
+
+  window[PLUGINS_UNLOCK_COMMAND] = function() {
+    if (!pluginsFolderOpenButton) {
+      pluginsFolderOpenButton = findPluginsFolderOpenButton();
+    }
+
+    if (!pluginsFolderOpenButton) {
+      console.warn('Plugins folder is not available yet. Try again in a moment.');
+      return false;
+    }
+
+    setPluginsFolderVisibility(true);
+    console.info('Plugins folder unlocked.');
+    return true;
+  };
+
+  console.info('Type window.' + PLUGINS_UNLOCK_COMMAND + '() in the browser console to unlock the Plugins folder.');
+}
+
 function main() {
   console.log('voxelmetaverse starting'); // TODO: show git version (browserify-commit-sha)
 
@@ -196,6 +249,8 @@ function main() {
     'kb-bindings-ui': {}
     }
   });
+
+  hidePluginsFolderUntilUnlocked();
 }
 
 main();
